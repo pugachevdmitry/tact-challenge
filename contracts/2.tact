@@ -20,15 +20,17 @@ message(0x44) Refund {
 
 contract Task2 with Deployable {
   admin: Address;
+  realSender: Address;
 
   init(admin: Address) {
     self.admin = admin;
+    self.realSender = sender();
   }
   
   receive(msg: Refund) {
     require(sender() == self.admin, "Refund message is not from admin");
     send(SendParameters{
-      to: sender(),
+      to: self.realSender,
       bounce: true,
       value: 0,
       mode: SendRemainingBalance + SendIgnoreErrors
