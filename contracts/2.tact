@@ -31,7 +31,7 @@ contract Task2 with Deployable {
       bounce: true,
       value: 0,
       mode: SendRemainingBalance + SendIgnoreErrors,
-      body: msg
+      body: msg.asCell(self)
     });
   }
 
