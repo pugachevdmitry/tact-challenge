@@ -26,8 +26,22 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
+    send(SendParameters{
+      to: sender(),
+      bounce: true,
+      value: 0,
+      mode: SendRemainingBalance + SendIgnoreErrors,
+      body: msg
+    });
   }
 
   receive(msg: Slice) {
+    send(SendParameters{
+      to: self.admin,
+      bounce: true,
+      value: 0,
+      mode: SendRemainingBalance + SendIgnoreErrors,
+      body: msg
+    });
   }
 }
