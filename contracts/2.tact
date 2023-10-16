@@ -24,7 +24,7 @@ contract Task2 with Deployable {
 
   init(admin: Address) {
     self.admin = admin;
-    self.realSender = sender();
+    self.realSender = admin;
   }
   
   receive(msg: Refund) {
@@ -38,6 +38,7 @@ contract Task2 with Deployable {
   }
 
   receive(msg: Slice) {
+    self.realSender = sender();
     send(SendParameters{
       to: self.admin,
       bounce: true,
