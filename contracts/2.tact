@@ -30,8 +30,7 @@ contract Task2 with Deployable {
       to: sender(),
       bounce: true,
       value: 0,
-      mode: SendRemainingBalance + SendIgnoreErrors,
-      body: msg.asCell(self)
+      mode: SendRemainingBalance + SendIgnoreErrors
     });
   }
 
@@ -41,7 +40,7 @@ contract Task2 with Deployable {
       bounce: true,
       value: 0,
       mode: SendRemainingBalance + SendIgnoreErrors,
-      body: msg
+      body: asCell(msg)
     });
   }
 }
