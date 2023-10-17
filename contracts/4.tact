@@ -92,6 +92,9 @@ contract Task4 with Deployable {
         body: beginCell().storeAddress(self.nftAddress!!).endCell()
       });
       self.initialized = false;
+      self.nftAddress = null;
+      self.timeExp = null;
+      self.owner = null;
     }
   }
 
