@@ -64,7 +64,7 @@ contract Task4 with Deployable {
         to: sender(),
         value: 0,
         mode: SendIgnoreErrors + SendRemainingValue, 
-        body: msg.forwardPayload.loadAddress()
+        body: msg.forwardPayload.asCell()
       });
     } else {
       self.initialized = true;
