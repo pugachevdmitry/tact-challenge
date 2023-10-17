@@ -94,6 +94,7 @@ contract Task4 with Deployable {
         mode: SendIgnoreErrors + SendRemainingValue,
         body: beginCell().storeAddress(self.nftAddress!!).endCell()
       });
+      self.initialized = false;
     }
   }
 
