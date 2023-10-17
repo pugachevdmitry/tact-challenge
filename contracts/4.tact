@@ -100,7 +100,7 @@ contract Task4 with Deployable {
 
   get fun time(): Int {
     require(self.initialized, "Not initialized");
-    return min(0, self.timeExp!! - now());
+    return max(0, self.timeExp!! - now());
   }
 
   get fun nft(): Address? {
