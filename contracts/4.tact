@@ -64,7 +64,14 @@ contract Task4 with Deployable {
         to: sender(),
         value: 0,
         mode: SendIgnoreErrors + SendRemainingValue, 
-        body: beginCell().storeAddress(msg.forwardPayload.loadAddress()).endCell()
+        body: Transfer{
+          queryId: 0,
+          newOwner: sender(),
+          responseDestination: sender(),
+          customPayload: null,
+          forwardAmount: 0,
+          forwardPayload: beginCell().storeAddress(msg.forwardPayload.loadAddress()).endCell().asSlice()
+        }.toCell()
       });
     } else {
       self.initialized = true;
