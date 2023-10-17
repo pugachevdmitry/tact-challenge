@@ -55,10 +55,7 @@ contract Task4 with Deployable {
   
   init(seed: Int) {
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
-    // self.nftAddress = sender();
     self.initialized = false;
-    // self.owner = sender();
-    // self.timeExp = 0;
   }
 
   receive(msg: OwnershipAssigned) {
@@ -67,7 +64,7 @@ contract Task4 with Deployable {
         to: sender(),
         value: 0,
         mode: SendIgnoreErrors + SendRemainingValue, 
-        body: msg.forwardPayload.loadRef()
+        body: msg.forwardPayload.loadAddress()
       });
     } else {
       self.initialized = true;
@@ -99,6 +96,7 @@ contract Task4 with Deployable {
   }
 
   get fun time(): Int {
+    require(self.initialized, "Not initialized");
     return min(0, now() - self.timeExp!!);
   }
 
