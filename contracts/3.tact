@@ -76,9 +76,9 @@ contract Task3 with Deployable {
           send(SendParameters{
             to: sender(),
             value: 0,
-            mode: 0,
+            mode: 64,
             body: TokenTransfer{
-              queryId: 0,
+              queryId: msg.queryId,
               amount: msg.amount,
               destination: msg.from,
               responseDestination: null,
@@ -93,9 +93,9 @@ contract Task3 with Deployable {
           send(SendParameters{
             to: self.jettonAddressB,
             value: 0,
-            mode: 0,
+            mode: 64,
             body: TokenTransfer{
-              queryId: 0,
+              queryId: msg.queryId,
               amount: amountToTransfer,
               destination: msg.from,
               responseDestination: null,
@@ -115,11 +115,11 @@ contract Task3 with Deployable {
           send(SendParameters{
             to: sender(),
             value: 0,
-            mode: 0,
+            mode: 64,
             body: TokenTransfer{
               queryId: 0,
               amount: msg.amount,
-              destination: sender(),
+              destination: msg.from,
               responseDestination: null,
               customPayload: null,
               forwardTonAmount: 0,
@@ -132,11 +132,11 @@ contract Task3 with Deployable {
           send(SendParameters{
             to: self.jettonAddressA,
             value: 0,
-            mode: 0,
+            mode: 64,
             body: TokenTransfer{
               queryId: 0,
               amount: amountToTransfer,
-              destination: sender(),
+              destination: msg.from,
               responseDestination: null,
               customPayload: null,
               forwardTonAmount: 0,
