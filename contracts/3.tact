@@ -67,6 +67,7 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
+    require(sender() == self.jettonAddressA || sender() == self.jettonAddressB, "Wrong address for jetton");
     if (sender() == self.jettonAddressA) {
       if (msg.from == self.owner) {
         self.aAmount = self.aAmount + msg.amount;
@@ -102,7 +103,7 @@ contract Task3 with Deployable {
           self.bAmount = self.bAmount - amountToTransfer;
         }
       }
-    } else if (sender() == self.jettonAddressB) {
+    } else {
       if (msg.from == self.owner) {
         self.bAmount = self.bAmount + msg.amount;
       } else {
@@ -119,8 +120,6 @@ contract Task3 with Deployable {
             }.toCell()
           );
         } else {
-          self.bAmount = self.bAmount + msg.amount;
-          self.aAmount = self.aAmount - amountToTransfer;
           send(SendParameters{
             to: self.jettonAddressA,
             value: 0,
@@ -135,6 +134,8 @@ contract Task3 with Deployable {
               forwardPayload: emptySlice()
             }.toCell()
           });
+          self.bAmount = self.bAmount + msg.amount;
+          self.aAmount = self.aAmount - amountToTransfer;
         }
       }
     } 
