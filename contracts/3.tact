@@ -72,7 +72,7 @@ contract Task3 with Deployable {
       if (msg.from == self.owner) {
         self.aAmount = self.aAmount + msg.amount;
       } else {
-        let amountToTransfer: Int = self.price(self.jettonAddressB) * msg.amount / self.decimal;
+        let amountToTransfer: Int = (self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal;
         if (amountToTransfer > self.bAmount) {
           self.reply(TokenTransfer{
               queryId: 0,
@@ -107,7 +107,7 @@ contract Task3 with Deployable {
       if (msg.from == self.owner) {
         self.bAmount = self.bAmount + msg.amount;
       } else {
-        let amountToTransfer: Int = self.price(self.jettonAddressA) * msg.amount / self.decimal;
+        let amountToTransfer: Int = (self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal;
         if (amountToTransfer > self.aAmount) {
           self.reply(TokenTransfer{
               queryId: 0,
