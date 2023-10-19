@@ -155,7 +155,7 @@ contract Task5 with Deployable {
         if (self.mp.get(i) != null) {
           send(SendParameters{
             to: self.mp.get(i)!!,
-            value: ton("0.08"),
+            value: ton("0.02"),
             mode: SendIgnoreErrors,
             body: Transfer{
               queryId: 0,
