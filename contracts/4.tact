@@ -60,14 +60,19 @@ contract Task4 with Deployable {
 
   receive(msg: OwnershipAssigned) {
     if (self.initialized) {
-      self.reply(Transfer{
-        queryId: 0,
-        newOwner: msg.prevOwner,
-        responseDestination: myAddress(),
-        customPayload: null,
-        forwardAmount: ton("0.01"),
-        forwardPayload: beginCell().storeAddress(msg.forwardPayload.loadAddress()).asSlice()
-      }.toCell());
+      send(SendParameters{
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue,
+        body: Transfer{
+            queryId: 0,
+            newOwner: msg.prevOwner,
+            responseDestination: myAddress(),
+            customPayload: null,
+            forwardAmount: ton("0.01"),
+            forwardPayload: beginCell().storeAddress(msg.forwardPayload.loadAddress()).asSlice()
+          }.toCell()
+      });
     } else {
       self.initialized = true;
       self.timeExp = now() + msg.forwardPayload.loadUint(32);
@@ -81,21 +86,18 @@ contract Task4 with Deployable {
     require(self.initialized, "No NFT locked");
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
-      dump("NFT is still locked");
+      self.reply(
+        "NFT is still locked".asComment()
+      );
     } else {
-      send(SendParameters{
-        to: self.owner!!,
-        value: 0,
-        mode: SendRemainingBalance,
-        body: Transfer {
+      self.reply(Transfer {
           queryId: 0,
           newOwner: self.owner!!,
           responseDestination: myAddress(),
           customPayload: null,
           forwardAmount: 0,
           forwardPayload: beginCell().storeAddress(msg.nftAddress).endCell().asSlice()
-        }.toCell()
-      });
+        }.toCell());
       self.initialized = false;
       self.nftAddress = null;
       self.timeExp = null;
