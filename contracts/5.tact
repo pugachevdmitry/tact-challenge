@@ -127,8 +127,8 @@ contract Task5 with Deployable {
             self.mp.set(i, null);
             done = true;
 
-            cur = cur + 1;
           }
+          cur = cur + 1;
         }
         i = i + 1;
       }
