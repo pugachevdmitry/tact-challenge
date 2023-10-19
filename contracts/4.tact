@@ -97,7 +97,7 @@ contract Task4 with Deployable {
           newOwner: self.owner!!,
           responseDestination: myAddress(),
           customPayload: null,
-          forwardAmount: myBalance(),
+          forwardAmount: 0,
           forwardPayload: beginCell().storeAddress(msg.nftAddress).endCell().asSlice()
         }.toCell()
       });
