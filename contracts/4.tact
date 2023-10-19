@@ -81,17 +81,12 @@ contract Task4 with Deployable {
     require(self.initialized, "No NFT locked");
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
-      send(SendParameters{
-        to: sender(),
-        value: 0,
-        mode: SendRemainingValue,
-        body: "NFT is still locked".asComment()
-      });
+      dump("NFT is still locked");
     } else {
       send(SendParameters{
         to: self.owner!!,
         value: 0,
-        mode: SendIgnoreErrors + SendRemainingBalance,
+        mode: SendRemainingBalance,
         body: Transfer {
           queryId: 0,
           newOwner: self.owner!!,
