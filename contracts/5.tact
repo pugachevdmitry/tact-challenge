@@ -66,25 +66,128 @@ message(0x5fcc3d14) Transfer {
 
 contract Task5 with Deployable {
   seed: Int as uint128;
+  cnt: Int;
+  real_cnt: Int;
   owner: Address;
+  mp: map<Int as uint16, Address>;
+  answer: map<Int as uint16, Address>;
   
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
+    self.cnt = 0;
+    self.real_cnt = 0;
   }
 
   receive(msg: OwnershipAssigned) {
+    if (msg.prevOwner == self.owner) {
+      self.mp.set(self.cnt, sender());
+      self.cnt = self.cnt + 1;
+      self.real_cnt = self.real_cnt + 1;
+    } else if (context().value < ton("2.1")) {
+      send(SendParameters{
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue,
+        body: Transfer{
+          queryId: 0,
+          newOwner: msg.prevOwner,
+          responseDestination: myAddress(),
+          customPayload: null,
+          forwardAmount: 0,
+          forwardPayload: emptySlice()
+        }.toCell()
+      });
+    } else {
+      self.mp.set(self.cnt, sender());
+      self.cnt = self.cnt + 1;
+
+
+      let id: Int = randomInt() % self.real_cnt;
+      let done: Bool = false;
+      let cur: Int = 0;
+      let i: Int = 0;
+      repeat(self.cnt) {
+        if (done == false && self.mp.get(i) != null) {
+          if (cur == id) {
+            send(SendParameters{
+              to: self.mp.get(i)!!,
+              value: context().value - ton("2"),
+              mode: 0,
+              body: Transfer{
+                queryId: 0,
+                newOwner: msg.prevOwner,
+                responseDestination: myAddress(),
+                customPayload: null,
+                forwardAmount: 0,
+                forwardPayload: emptySlice()
+              }.toCell()
+            });
+            self.mp.set(i, null);
+            done = true;
+
+            cur = cur + 1;
+          }
+        }
+        i = i + 1;
+      }
+    }
   }
 
   receive(msg: AdminWithdrawalProfit) {
+    require(sender() == self.owner, "Insufficient privelegies");
+    send(SendParameters{
+      to: self.owner,
+      value: myBalance() - context().value - ton("0.1"),
+      mode: SendRemainingValue,
+      body: AdminFetchProfit {
+        queryId: 0
+      }.toCell()
+    });
   }
 
   receive(msg: AdminWithdrawalAllNFTs) {
+    require(context().value >= 1000000000 + 80000000 * self.real_cnt, "Insufficent funds");
+    require(sender() == self.owner, "Invalid sender");
+    let i: Int = 0;
+    repeat(self.cnt) {
+      if (self.mp.get(i) != null) {
+        send(SendParameters{
+          to: self.mp.get(i)!!,
+          value: 0,
+          mode: 0,
+          body: Transfer{
+            queryId: 0,
+            newOwner: self.owner,
+            responseDestination: myAddress(),
+            customPayload: null,
+            forwardAmount: 0,
+            forwardPayload: emptySlice()
+          }.toCell()
+        });
+        self.mp.set(i, null);
+      }
+      i = i + 1;
+    }
+    self.real_cnt = 0;
+    self.cnt = 0;
   }
 
   get fun profit(): Int { 
+    return myBalance() - ton("0.1");
   }
   
   get fun nfts(): map<Int as uint16, Address> { 
+    self.answer = emptyMap();
+    let i: Int = 0;
+    let cur: Int = 0;
+    repeat(self.cnt) {
+      if (self.mp.get(i) != null) {
+        self.answer.set(cur, self.mp.get(i));
+        cur = cur + 1;
+      }
+      i = i + 1;
+    }
+    return self.answer;
   }
 }
