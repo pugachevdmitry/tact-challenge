@@ -80,7 +80,7 @@ contract Task5 with Deployable {
   }
 
   receive(msg: OwnershipAssigned) {
-    let balBefore: Int = myBalance() - context.value();
+    let balBefore: Int = myBalance() - context().value;
 
     if (msg.prevOwner == self.owner) {
       self.mp.set(self.cnt, sender());
