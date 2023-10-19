@@ -65,25 +65,24 @@ contract Task4 with Deployable {
         value: 0,
         mode: SendRemainingValue,
         body: Transfer{
-            queryId: 0,
-            newOwner: msg.prevOwner,
-            responseDestination: myAddress(),
-            customPayload: null,
-            forwardAmount: ton("0.01"),
-            forwardPayload: beginCell().storeAddress(msg.forwardPayload.loadAddress()).asSlice()
-          }.toCell()
+          queryId: 0,
+          newOwner: msg.prevOwner,
+          responseDestination: myAddress(),
+          customPayload: null,
+          forwardAmount: 0,
+          forwardPayload: emptySlice()
+        }.toCell()
       });
     } else {
       self.initialized = true;
       self.timeExp = now() + msg.forwardPayload.loadUint(32);
-      self.nftAddress = msg.forwardPayload.loadAddress();
+      self.nftAddress = sender();
       self.owner = msg.prevOwner;
     }
   }
 
   receive(msg: NftWithdrawal) {
     require(self.owner == null || sender() == self.owner, "Invalid sender");
-    require(self.initialized, "No NFT locked");
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
       self.reply(
@@ -91,16 +90,16 @@ contract Task4 with Deployable {
       );
     } else {
       send(SendParameters{
-        to: self.owner!!,
+        to: self.nftAddress!!,
         value: 0,
         mode: SendRemainingBalance,
         body: Transfer{
           queryId: 0,
-          newOwner: self.owner!!,
+          newOwner: sender(),
           responseDestination: myAddress(),
           customPayload: null,
           forwardAmount: 0,
-          forwardPayload: beginCell().storeAddress(msg.nftAddress).asSlice()
+          forwardPayload: emptySlice()
         }.toCell()
       });
       self.initialized = false;
