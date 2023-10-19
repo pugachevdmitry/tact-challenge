@@ -138,7 +138,7 @@ contract Task5 with Deployable {
     send(SendParameters{
       to: self.owner,
       value: myBalance() - context().value - ton("0.1"),
-      mode: SendRemainingValue,
+      mode: SendRemainingValue + SendIgnoreErrors,
       body: AdminFetchProfit {
         queryId: 0
       }.toCell()
@@ -154,7 +154,7 @@ contract Task5 with Deployable {
         send(SendParameters{
           to: self.mp.get(i)!!,
           value: 0,
-          mode: 0,
+          mode: SendIgnoreErrors,
           body: Transfer{
             queryId: 0,
             newOwner: self.owner,
@@ -174,7 +174,7 @@ contract Task5 with Deployable {
   }
 
   get fun profit(): Int { 
-    return myBalance() - ton("0.1");
+    return myBalance() - context().value - ton("0.1");
   }
   
   get fun nfts(): map<Int as uint16, Address> { 
