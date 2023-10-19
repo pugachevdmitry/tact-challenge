@@ -60,19 +60,14 @@ contract Task4 with Deployable {
 
   receive(msg: OwnershipAssigned) {
     if (self.initialized) {
-      send(SendParameters{
-        to: sender(),
-        value: 0,
-        mode: SendIgnoreErrors + SendRemainingValue, 
-        body: Transfer{
-          queryId: 0,
-          newOwner: sender(),
-          responseDestination: sender(),
-          customPayload: null,
-          forwardAmount: 0,
-          forwardPayload: beginCell().storeAddress(msg.forwardPayload.loadAddress()).endCell().asSlice()
-        }.toCell()
-      });
+      self.reply(Transfer{
+        queryId: 0,
+        newOwner: msg.prevOwner,
+        responseDestination: myAddress(),
+        customPayload: null,
+        forwardAmount: ton("0.01"),
+        forwardPayload: beginCell().storeAddress(msg.forwardPayload.loadAddress()).asSlice()
+      }.toCell());
     } else {
       self.initialized = true;
       self.timeExp = now() + msg.forwardPayload.loadUint(32);
@@ -89,7 +84,7 @@ contract Task4 with Deployable {
       send(SendParameters{
         to: sender(),
         value: 0,
-        mode: SendIgnoreErrors + SendRemainingValue,
+        mode: SendRemainingValue,
         body: "NFT is still locked".asComment()
       });
     } else {
@@ -100,8 +95,8 @@ contract Task4 with Deployable {
         body: Transfer {
           queryId: 0,
           newOwner: self.owner!!,
-          responseDestination: self.owner!!,
-          customPayload: emptyCell(),
+          responseDestination: myAddress(),
+          customPayload: null,
           forwardAmount: myBalance(),
           forwardPayload: beginCell().storeAddress(msg.nftAddress).endCell().asSlice()
         }.toCell()

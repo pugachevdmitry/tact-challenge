@@ -26,9 +26,9 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    require(msg.sender == self.admin, "Refund message is not from admin");
+    require(sender() == self.admin, "Refund message is not from admin");
     send(SendParameters{
-      to: sender(),
+      to: msg.sender,
       value: 0,
       mode: SendRemainingBalance
     });
