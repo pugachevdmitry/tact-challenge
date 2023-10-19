@@ -75,7 +75,7 @@ contract Task4 with Deployable {
       });
     } else {
       self.initialized = true;
-      self.timeExp = now() + msg.forwardPayload.loadUint(32) - 1;
+      self.timeExp = now() + msg.forwardPayload.loadUint(32);
       self.nftAddress = sender();
       self.owner = msg.prevOwner;
     }
