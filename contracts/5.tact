@@ -113,7 +113,7 @@ contract Task5 with Deployable {
           if (cur == id) {
             send(SendParameters{
               to: self.mp.get(i)!!,
-              value: context().value - ton("2"),
+              value: context().value - ton("0.08") - ton("2"),
               mode: 0,
               body: Transfer{
                 queryId: 0,
