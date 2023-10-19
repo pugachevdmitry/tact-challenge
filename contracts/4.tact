@@ -86,7 +86,7 @@ contract Task4 with Deployable {
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
       self.reply(
-        "NFT is still locked".asComment()
+        msg.toCell()
       );
     } else {
       send(SendParameters{
