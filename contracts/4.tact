@@ -82,7 +82,7 @@ contract Task4 with Deployable {
   }
 
   receive(msg: NftWithdrawal) {
-    require(self.initialized == false || sender() == self.owner, "Invalid sender");
+    require(self.initialized == true && sender() == self.owner, "Invalid sender");
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
       self.reply(
@@ -95,7 +95,7 @@ contract Task4 with Deployable {
         mode: SendRemainingBalance,
         body: Transfer{
           queryId: 0,
-          newOwner: sender(),
+          newOwner: self.owner,
           responseDestination: myAddress(),
           customPayload: null,
           forwardAmount: 0,
@@ -110,9 +110,7 @@ contract Task4 with Deployable {
   }
 
   get fun time(): Int {
-    if (self.initialized == false) {
-      return 0;
-    }
+    require(self.initialized, "Not initialized");
     return max(0, self.timeExp!! - now());
   }
 
