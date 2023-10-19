@@ -30,20 +30,19 @@ contract Task2 with Deployable {
   receive(msg: Refund) {
     require(sender() == self.admin, "Refund message is not from admin");
     send(SendParameters{
-      to: self.realSender,
+      to: self.admin,
       bounce: true,
       value: 0,
-      mode: SendRemainingBalance + SendIgnoreErrors
+      mode: SendRemainingBalance
     });
   }
 
   receive(msg: Slice) {
-    self.realSender = sender();
     send(SendParameters{
       to: self.admin,
       bounce: true,
       value: 0,
-      mode: SendRemainingBalance + SendIgnoreErrors,
+      mode: SendRemainingBalance,
       body: beginCell().storeRef(msg.asCell()).storeAddress(sender()).asCell()
     });
   }
