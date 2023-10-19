@@ -113,7 +113,7 @@ contract Task5 with Deployable {
           if (cur == id) {
             send(SendParameters{
               to: self.mp.get(i)!!,
-              value: context().value - ton("0.08") - ton("2"),
+              value: context().value - ton("2"),
               mode: 0,
               body: Transfer{
                 queryId: 0,
@@ -140,7 +140,7 @@ contract Task5 with Deployable {
     send(SendParameters{
       to: self.owner,
       value: myBalance() - ton("0.1"),
-      mode: SendRemainingValue + SendIgnoreErrors,
+      mode: SendIgnoreErrors,
       body: AdminFetchProfit {
         queryId: 0
       }.toCell()
@@ -150,34 +150,36 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalAllNFTs) {
     require(context().value >= 1000000000 + 80000000 * self.real_cnt, "Insufficent funds");
     require(sender() == self.owner, "Invalid sender");
-    let i: Int = 0;
-    let amount: Int = context().value / self.real_cnt;
-    repeat(self.cnt) {
-      if (self.mp.get(i) != null) {
-        send(SendParameters{
-          to: self.mp.get(i)!!,
-          value: amount,
-          mode: SendIgnoreErrors,
-          body: Transfer{
-            queryId: 0,
-            newOwner: self.owner,
-            responseDestination: myAddress(),
-            customPayload: null,
-            forwardAmount: 0,
-            forwardPayload: emptySlice()
-          }.toCell()
-        });
-        self.mp.set(i, null);
+    if (self.real_cnt != 0) {
+      let i: Int = 0;
+      let amount: Int = context().value / self.real_cnt;
+      repeat(self.cnt) {
+        if (self.mp.get(i) != null) {
+          send(SendParameters{
+            to: self.mp.get(i)!!,
+            value: amount,
+            mode: SendIgnoreErrors,
+            body: Transfer{
+              queryId: 0,
+              newOwner: self.owner,
+              responseDestination: myAddress(),
+              customPayload: null,
+              forwardAmount: 0,
+              forwardPayload: emptySlice()
+            }.toCell()
+          });
+          self.mp.set(i, null);
+        }
+        i = i + 1;
       }
-      i = i + 1;
+      self.real_cnt = 0;
+      self.cnt = 0;
+      self.mp = emptyMap();
     }
-    self.real_cnt = 0;
-    self.cnt = 0;
-    self.mp = emptyMap();
   }
 
   get fun profit(): Int { 
-    return myBalance() - context().value - ton("0.1");
+    return myBalance() - ton("0.1");
   }
   
   get fun nfts(): map<Int as uint16, Address> { 
