@@ -82,7 +82,7 @@ contract Task4 with Deployable {
   }
 
   receive(msg: NftWithdrawal) {
-    require(self.initialized == true && sender() == self.owner, "Invalid sender");
+    require(sender() == self.owner, "Invalid sender");
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
       self.reply(
