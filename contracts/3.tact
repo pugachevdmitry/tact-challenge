@@ -84,8 +84,6 @@ contract Task3 with Deployable {
             }.toCell()
           );
         } else {
-          self.aAmount = self.aAmount + msg.amount;
-          self.bAmount = self.bAmount - amountToTransfer;
           send(SendParameters{
             to: self.jettonAddressB,
             value: 0,
@@ -100,11 +98,13 @@ contract Task3 with Deployable {
               forwardPayload: emptySlice()
             }.toCell()
           });
+          self.aAmount = self.aAmount + msg.amount;
+          self.bAmount = self.bAmount - amountToTransfer;
         }
       }
     } else if (sender() == self.jettonAddressB) {
       if (msg.from == self.owner) {
-        self.aAmount = self.aAmount + msg.amount;
+        self.bAmount = self.bAmount + msg.amount;
       } else {
         let amountToTransfer: Int = self.price(self.jettonAddressA) * msg.amount / self.decimal;
         if (amountToTransfer > self.aAmount) {
