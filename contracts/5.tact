@@ -85,19 +85,21 @@ contract Task5 with Deployable {
       self.cnt = self.cnt + 1;
       self.real_cnt = self.real_cnt + 1;
     } else if (context().value < ton("2.1")) {
-      send(SendParameters{
-        to: sender(),
-        value: 0,
-        mode: SendRemainingValue,
-        body: Transfer{
-          queryId: 0,
-          newOwner: msg.prevOwner,
-          responseDestination: myAddress(),
-          customPayload: null,
-          forwardAmount: 0,
-          forwardPayload: emptySlice()
-        }.toCell()
-      });
+      if (context().value >= ton("0.08")) {
+        send(SendParameters{
+          to: sender(),
+          value: 0,
+          mode: SendRemainingValue,
+          body: Transfer{
+            queryId: 0,
+            newOwner: msg.prevOwner,
+            responseDestination: myAddress(),
+            customPayload: null,
+            forwardAmount: 0,
+            forwardPayload: emptySlice()
+          }.toCell()
+        });
+      }
     } else {
       self.mp.set(self.cnt, sender());
       self.cnt = self.cnt + 1;
