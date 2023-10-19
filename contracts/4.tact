@@ -85,9 +85,12 @@ contract Task4 with Deployable {
     require(self.initialized == true && sender() == self.owner, "Invalid sender");
     require(self.nftAddress!! == msg.nftAddress, "NFT not matches");
     if (now() < self.timeExp!!) {
-      self.reply(
-        "NFT is still locked".asComment()
-      );
+      send(SendParameters{
+        to: self.owner!!,
+        value: 0,
+        mode: SendRemainingValue,
+        body: "NFT is still locked".asComment()
+      });
     } else {
       send(SendParameters{
         to: self.nftAddress!!,
