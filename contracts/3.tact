@@ -74,13 +74,13 @@ contract Task3 with Deployable {
         let amountToTransfer: Int = self.price(self.jettonAddressB) * msg.amount / self.decimal;
         if (amountToTransfer > self.bAmount) {
           self.reply(TokenTransfer{
-              queryId: msg.queryId,
+              queryId: 0,
               amount: msg.amount,
               destination: msg.from,
-              responseDestination: null,
+              responseDestination: myAddress(),
               customPayload: null,
-              forwardTonAmount: 0,
-              forwardPayload: msg.forwardPayload
+              forwardTonAmount: ton("0.01"),
+              forwardPayload: emptySlice()
             }.toCell()
           );
         } else {
@@ -91,13 +91,13 @@ contract Task3 with Deployable {
             value: 0,
             mode: 64,
             body: TokenTransfer{
-              queryId: msg.queryId,
+              queryId: 0,
               amount: amountToTransfer,
               destination: msg.from,
-              responseDestination: null,
+              responseDestination: myAddress(),
               customPayload: null,
-              forwardTonAmount: 0,
-              forwardPayload: msg.forwardPayload
+              forwardTonAmount: ton("0.01"),
+              forwardPayload: emptySlice()
             }.toCell()
           });
         }
@@ -112,10 +112,10 @@ contract Task3 with Deployable {
               queryId: 0,
               amount: msg.amount,
               destination: msg.from,
-              responseDestination: null,
+              responseDestination: myAddress(),
               customPayload: null,
-              forwardTonAmount: 0,
-              forwardPayload: msg.forwardPayload
+              forwardTonAmount: ton("0.01"),
+              forwardPayload: emptySlice()
             }.toCell()
           );
         } else {
@@ -129,10 +129,10 @@ contract Task3 with Deployable {
               queryId: 0,
               amount: amountToTransfer,
               destination: msg.from,
-              responseDestination: null,
+              responseDestination: myAdress(),
               customPayload: null,
-              forwardTonAmount: 0,
-              forwardPayload: msg.forwardPayload
+              forwardTonAmount: ton("0.01"),
+              forwardPayload: emptyCell()
             }.toCell()
           });
         }
