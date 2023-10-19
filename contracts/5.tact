@@ -24,7 +24,7 @@ import "@stdlib/deploy";
   * OwnershipAssigned 
    - if prevOwner is the owner's (admin) address, then add NFT to the collection
    - if value of TON attached is less then 2.1 TON then stop execution and return NFT back,
-     but only in case that TON attached is enough to process refund without losing TONs on the SC's balance
+     but only in case that TON attached is enough to process refund without losing TONs on the SC's balance TODO!!!
    - randomly select NFT to send from all the NFTs that smart contract has
    - send the selected NFT to the sender with all remaining balance (except for admin profit = fees collected from this and other swaps)
      In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
@@ -80,26 +80,26 @@ contract Task5 with Deployable {
   }
 
   receive(msg: OwnershipAssigned) {
+    let balBefore: Int = myBalance() - context.value();
+
     if (msg.prevOwner == self.owner) {
       self.mp.set(self.cnt, sender());
       self.cnt = self.cnt + 1;
       self.real_cnt = self.real_cnt + 1;
     } else if (context().value < ton("2.1")) {
-      if (context().value >= ton("0.08")) {
-        send(SendParameters{
-          to: sender(),
-          value: 0,
-          mode: SendRemainingValue,
-          body: Transfer{
-            queryId: 0,
-            newOwner: msg.prevOwner,
-            responseDestination: myAddress(),
-            customPayload: null,
-            forwardAmount: 0,
-            forwardPayload: emptySlice()
-          }.toCell()
-        });
-      }
+      send(SendParameters{
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue,
+        body: Transfer{
+          queryId: 0,
+          newOwner: msg.prevOwner,
+          responseDestination: myAddress(),
+          customPayload: null,
+          forwardAmount: 0,
+          forwardPayload: emptySlice()
+        }.toCell()
+      });
     } else {
       self.mp.set(self.cnt, sender());
       self.cnt = self.cnt + 1;
@@ -139,7 +139,7 @@ contract Task5 with Deployable {
     require(sender() == self.owner, "Insufficient privelegies");
     send(SendParameters{
       to: self.owner,
-      value: myBalance() - context().value - ton("0.1"),
+      value: myBalance() - ton("0.1"),
       mode: SendRemainingValue + SendIgnoreErrors,
       body: AdminFetchProfit {
         queryId: 0
@@ -151,11 +151,12 @@ contract Task5 with Deployable {
     require(context().value >= 1000000000 + 80000000 * self.real_cnt, "Insufficent funds");
     require(sender() == self.owner, "Invalid sender");
     let i: Int = 0;
+    let amount: Int = context().value / self.real_cnt;
     repeat(self.cnt) {
       if (self.mp.get(i) != null) {
         send(SendParameters{
           to: self.mp.get(i)!!,
-          value: ton("0.08"),
+          value: amount,
           mode: SendIgnoreErrors,
           body: Transfer{
             queryId: 0,
