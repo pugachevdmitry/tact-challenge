@@ -102,8 +102,7 @@ contract Task5 with Deployable {
       self.mp.set(self.cnt, sender());
       self.cnt = self.cnt + 1;
 
-
-      let id: Int = randomInt() % self.real_cnt;
+      let id: Int = randomInt() % (self.real_cnt + 1);
       let done: Bool = false;
       let cur: Int = 0;
       let i: Int = 0;
@@ -171,6 +170,7 @@ contract Task5 with Deployable {
     }
     self.real_cnt = 0;
     self.cnt = 0;
+    self.mp = emptyMap();
   }
 
   get fun profit(): Int { 
