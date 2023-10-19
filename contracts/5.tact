@@ -126,7 +126,6 @@ contract Task5 with Deployable {
             });
             self.mp.set(i, null);
             done = true;
-
           }
           cur = cur + 1;
         }
@@ -152,12 +151,11 @@ contract Task5 with Deployable {
     require(sender() == self.owner, "Invalid sender");
     if (self.real_cnt != 0) {
       let i: Int = 0;
-      let amount: Int = context().value / self.real_cnt;
       repeat(self.cnt) {
         if (self.mp.get(i) != null) {
           send(SendParameters{
             to: self.mp.get(i)!!,
-            value: amount,
+            value: ton("0.08"),
             mode: SendIgnoreErrors,
             body: Transfer{
               queryId: 0,
@@ -168,7 +166,6 @@ contract Task5 with Deployable {
               forwardPayload: emptySlice()
             }.toCell()
           });
-          self.mp.set(i, null);
         }
         i = i + 1;
       }
@@ -181,7 +178,7 @@ contract Task5 with Deployable {
   get fun profit(): Int { 
     return myBalance() - ton("0.1");
   }
-  
+
   get fun nfts(): map<Int as uint16, Address> { 
     self.answer = emptyMap();
     let i: Int = 0;
