@@ -75,7 +75,7 @@ contract Task4 with Deployable {
       });
     } else {
       self.initialized = true;
-      self.timeExp = now() + msg.forwardPayload.loadUint(32);
+      self.timeExp = now() + msg.forwardPayload.loadUint(32) - 1;
       self.nftAddress = sender();
       self.owner = msg.prevOwner;
     }
@@ -114,7 +114,7 @@ contract Task4 with Deployable {
 
   get fun time(): Int {
     if (self.initialized) {
-      return max(0, self.timeExp!! - now());
+      return max(0, self.timeExp!! - now() + 1);
     }
     return 0;
   }
