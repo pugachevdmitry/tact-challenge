@@ -70,7 +70,7 @@ contract Task4 with Deployable {
           responseDestination: myAddress(),
           customPayload: null,
           forwardAmount: 0,
-          forwardPayload: msg.forwardPayload
+          forwardPayload: emptySlice()
         }.toCell()
       });
     } else {
@@ -95,7 +95,7 @@ contract Task4 with Deployable {
         mode: SendRemainingBalance,
         body: Transfer{
           queryId: 0,
-          newOwner: self.owner,
+          newOwner: self.owner!!,
           responseDestination: myAddress(),
           customPayload: null,
           forwardAmount: 0,
