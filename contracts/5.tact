@@ -174,11 +174,10 @@ contract Task5 with Deployable {
     require(context().value >= ton("1") + ton("0.08") * self.nftCnt, "Insufficent funds");
     require(sender() == self.owner, "Invalid sender");
     if (self.nftCnt > 0) {
-      let i: Int = 0;
       let blocks: Int = (self.nftCnt + self.blockSize - 1) / self.blockSize;
       let amount: Int = context().value / blocks;
       let left: Int = 0;
-      repeat(blocks) {
+      repeat(blocks - 1) {
         send(SendParameters{
           to: myAddress(),
           value: amount,
@@ -186,11 +185,21 @@ contract Task5 with Deployable {
           body: TransferNFTs{
             queryId: msg.queryId,
             l: left,
-            r: min(self.nftCnt - 1, self.blockSize * (i + 1) - 1)
+            r: left + self.blockSize - 1
           }.toCell()
         });
         left = left + self.blockSize;
       }
+      send(SendParameters{
+        to: myAddress(),
+        value: amount,
+        mode: SendIgnoreErrors,
+        body: TransferNFTs{
+          queryId: msg.queryId,
+          l: left,
+          r: self.nftCnt - 1
+        }.toCell()
+      });
     }
   }
 
