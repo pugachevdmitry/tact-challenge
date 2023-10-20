@@ -130,14 +130,16 @@ contract Task5 with Deployable {
 
   receive(msg: AdminWithdrawalProfit) {
     require(sender() == self.owner, "Insufficient privelegies");
-    send(SendParameters{
-      to: self.owner,
-      value: self.profit(),
-      mode: SendIgnoreErrors,
-      body: AdminFetchProfit {
-        queryId: msg.queryId
-      }.toCell()
-    });
+    if (myBalance() >= ton("0.1")) {
+      send(SendParameters{
+        to: self.owner,
+        value: self.profit(),
+        mode: SendIgnoreErrors,
+        body: AdminFetchProfit {
+          queryId: msg.queryId
+        }.toCell()
+      });
+    }
   }
 
   receive(msg: AdminWithdrawalAllNFTs) {
