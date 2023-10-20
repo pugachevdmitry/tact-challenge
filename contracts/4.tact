@@ -54,7 +54,7 @@ contract Task4 with Deployable {
   timeExp: Int;
   
   init(seed: Int) {
-    self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
+    self.seed = seed;
     self.initialized = false;
     self.timeExp = -1;
   }
