@@ -167,7 +167,7 @@ contract Task5 with Deployable {
   }
 
   get fun profit(): Int { 
-    return max(0, myBalance() - ton("0.1"));
+    return myBalance() - ton("0.1");
   }
 
   get fun nfts(): map<Int as uint16, Address> { 
