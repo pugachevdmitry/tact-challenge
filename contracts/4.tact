@@ -104,6 +104,7 @@ contract Task4 with Deployable {
       });
       self.initialized = false;
       self.owner = null;
+      self.nftAddress = null;
     }
   }
 
