@@ -83,7 +83,7 @@ contract Task5 with Deployable {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
     self.nftCnt = 0;
-    self.blockSize = 55;
+    self.blockSize = 60;
   }
 
   receive(msg: OwnershipAssigned) {
@@ -182,7 +182,7 @@ contract Task5 with Deployable {
       repeat(blocks) {
         curL = blocks * i;
         let left: Int = blocks * curL;
-        let right: Int = min(self.nftCnt - 1, blocks * (curL + 1) - 1);
+        let right: Int = min(self.nftCnt - 1, blocks * (i + 1) - 1);
         send(SendParameters{
           to: myAddress(),
           value: amount,
