@@ -81,7 +81,7 @@ contract Task5 with Deployable {
     if (msg.prevOwner == self.owner) {
       self.mp.set(self.nftCnt, sender());
       self.nftCnt = self.nftCnt + 1;
-    } else if (context().value < ton("2.1")) {
+    } else if (context().value < 2100000000) {
       send(SendParameters{
         to: sender(),
         value: 0,
@@ -98,7 +98,7 @@ contract Task5 with Deployable {
     } else {
       send(SendParameters{
         to: myAddress(),
-        value: ton("2"),
+        value: 2000000000,
         mode: SendIgnoreErrors
       });
 
@@ -131,7 +131,7 @@ contract Task5 with Deployable {
     require(sender() == self.owner, "Insufficient privelegies");
     send(SendParameters{
       to: self.owner,
-      value: myBalance() - ton("0.1"),
+      value: self.profit(),
       mode: SendIgnoreErrors,
       body: AdminFetchProfit {
         queryId: 0
