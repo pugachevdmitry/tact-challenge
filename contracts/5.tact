@@ -195,7 +195,7 @@ contract Task5 with Deployable {
           r: self.nftCnt - 1
         }.toCell()
       });
-      mp = emptyMap();
+      self.mp = emptyMap();
     }
   }
 
