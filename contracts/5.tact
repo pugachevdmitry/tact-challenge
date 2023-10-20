@@ -99,6 +99,12 @@ contract Task5 with Deployable {
         }.toCell()
       });
     } else {
+      send(SendParameters{
+        to: myAddress(),
+        value: ton("2"),
+        mode: SendIgnoreErrors
+      });
+
       self.mp.set(self.cnt, sender());
       self.cnt = self.cnt + 1;
 
@@ -111,8 +117,8 @@ contract Task5 with Deployable {
           if (cur == id) {
             send(SendParameters{
               to: self.mp.get(i)!!,
-              value: context().value - ton("2.0"),
-              mode: 0,
+              value: 0,
+              mode: SendRemainingValue,
               body: Transfer{
                 queryId: 0,
                 newOwner: msg.prevOwner,
