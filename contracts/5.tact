@@ -180,8 +180,7 @@ contract Task5 with Deployable {
       let blocks: Int = (self.nftCnt + self.blockSize - 1) / self.blockSize;
       let amount: Int = context().value / blocks;
       repeat(blocks) {
-        curL = blocks * i;
-        let left: Int = blocks * curL;
+        let left: Int = blocks * i;
         let right: Int = min(self.nftCnt - 1, blocks * (i + 1) - 1);
         send(SendParameters{
           to: myAddress(),
