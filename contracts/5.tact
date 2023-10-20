@@ -162,7 +162,7 @@ contract Task5 with Deployable {
     if (myBalance() >= ton("0.1")) {
       send(SendParameters{
         to: self.owner,
-        value: myBalance() - context().value - ton("0.1"),
+        value: myBalance() - ton("0.1"),
         mode: SendIgnoreErrors + SendRemainingValue,
         body: AdminFetchProfit {
           queryId: msg.queryId
