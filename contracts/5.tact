@@ -112,13 +112,11 @@ contract Task5 with Deployable {
       });
 
       self.mp.set(self.nftCnt, sender());
-      self.nftCnt = self.nftCnt + 1;
 
-      let id: Int = randomInt() % self.nftCnt;
+      let id: Int = randomInt() % (self.nftCnt + 1);
       let tmp: Address = self.mp.get(id)!!;
-      self.mp.set(id, self.mp.get(self.nftCnt - 1));
+      self.mp.set(id, self.mp.get(self.nftCnt));
       self.mp.set(self.nftCnt - 1, null);
-      self.nftCnt = self.nftCnt - 1;
 
       send(SendParameters{
         to: tmp,

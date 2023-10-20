@@ -60,7 +60,7 @@ contract Task4 with Deployable {
   }
 
   receive(msg: OwnershipAssigned) {
-    if (self.initialized) {
+    if (self.owner != null) {
       send(SendParameters{
         to: sender(),
         value: 0,
@@ -75,7 +75,6 @@ contract Task4 with Deployable {
         }.toCell()
       });
     } else {
-      self.initialized = true;
       self.timeExp = now() + msg.forwardPayload.loadUint(32);
       self.nftAddress = sender();
       self.owner = msg.prevOwner;
@@ -102,7 +101,6 @@ contract Task4 with Deployable {
           forwardPayload: emptySlice()
         }.toCell()
       });
-      self.initialized = false;
       self.owner = null;
       self.nftAddress = null;
     }
