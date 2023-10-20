@@ -131,7 +131,7 @@ contract Task5 with Deployable {
     require(sender() == self.owner, "Insufficient privelegies");
     send(SendParameters{
       to: self.owner,
-      value: self.profit(),
+      value: myBalance() - context().value - ton("0.1"),
       mode: SendIgnoreErrors,
       body: AdminFetchProfit {
         queryId: 0
@@ -140,18 +140,18 @@ contract Task5 with Deployable {
   }
 
   receive(msg: AdminWithdrawalAllNFTs) {
-    require(context().value >= 1000000000 + 80000000 * self.nftCnt, "Insufficent funds");
+    require(context().value >= ton("1") + ton("0.08") * self.nftCnt, "Insufficent funds");
     require(sender() == self.owner, "Invalid sender");
     let i: Int = 0;
     repeat(self.nftCnt) {
       send(SendParameters{
         to: self.mp.get(i)!!,
-        value: ton("0.02"),
+        value: ton("0.08"),
         mode: SendIgnoreErrors,
         body: Transfer{
           queryId: 0,
           newOwner: self.owner,
-          responseDestination: myAddress(),
+          responseDestination: self.owner,
           customPayload: null,
           forwardAmount: 0,
           forwardPayload: emptySlice()
