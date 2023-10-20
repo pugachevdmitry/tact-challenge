@@ -147,7 +147,6 @@ contract Task5 with Deployable {
           forwardPayload: emptySlice()
         }.toCell()
       });
-      self.mp.set(cur, null);
       cur = cur + 1;
     }
   }
@@ -196,6 +195,7 @@ contract Task5 with Deployable {
           r: self.nftCnt - 1
         }.toCell()
       });
+      mp = emptyMap();
     }
   }
 
