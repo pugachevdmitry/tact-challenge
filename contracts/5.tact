@@ -89,7 +89,7 @@ contract Task5 with Deployable {
         body: Transfer{
           queryId: 0,
           newOwner: msg.prevOwner,
-          responseDestination: myAddress(),
+          responseDestination: msg.prevOwner,
           customPayload: null,
           forwardAmount: 0,
           forwardPayload: emptySlice()
@@ -118,7 +118,7 @@ contract Task5 with Deployable {
         body: Transfer{
           queryId: 0,
           newOwner: msg.prevOwner,
-          responseDestination: myAddress(),
+          responseDestination: msg.prevOwner,
           customPayload: null,
           forwardAmount: 0,
           forwardPayload: emptySlice()
@@ -151,7 +151,7 @@ contract Task5 with Deployable {
         body: Transfer{
           queryId: 0,
           newOwner: self.owner,
-          responseDestination: myAddress(),
+          responseDestination: self.owner,
           customPayload: null,
           forwardAmount: 0,
           forwardPayload: emptySlice()
