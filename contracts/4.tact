@@ -51,11 +51,12 @@ contract Task4 with Deployable {
   initialized: Bool;
   nftAddress: Address?;
   owner: Address?;
-  timeExp: Int?;
+  timeExp: Int;
   
   init(seed: Int) {
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
     self.initialized = false;
+    self.timeExp = -1;
   }
 
   receive(msg: OwnershipAssigned) {
@@ -83,7 +84,7 @@ contract Task4 with Deployable {
 
   receive(msg: NftWithdrawal) {
     require(sender() == self.owner, "Invalid sender");
-    if (now() < self.timeExp!!) {
+    if (now() < self.timeExp) {
       self.reply(
         "NFT is still locked".asComment()
       );
@@ -107,10 +108,7 @@ contract Task4 with Deployable {
   }
 
   get fun time(): Int {
-    if (self.initialized) {
-      return max(0, self.timeExp!! - now());
-    }
-    return 0;
+    return max(0, self.timeExp - now());
   }
 
   get fun nft(): Address? {
