@@ -178,7 +178,7 @@ contract Task5 with Deployable {
       let blocks: Int = (self.nftCnt + self.blockSize - 1) / self.blockSize;
       let amount: Int = context().value / blocks;
       let left: Int = 0;
-      repeat(blocks - 1) {
+      repeat(blocks) {
         send(SendParameters{
           to: myAddress(),
           value: amount,
@@ -186,22 +186,11 @@ contract Task5 with Deployable {
           body: TransferNFTs{
             queryId: msg.queryId,
             l: left,
-            r: self.blockSize * (i + 1) - 1
+            r: min(self.nftCnt - 1, self.blockSize * (i + 1) - 1),
           }.toCell()
         });
         left = left + self.blockSize;
       }
-      send(SendParameters{
-        to: myAddress(),
-        value: amount,
-        mode: SendIgnoreErrors,
-        body: TransferNFTs{
-          queryId: msg.queryId,
-          l: left,
-          r: self.nftCnt - 1
-        }.toCell()
-      });
-      self.nftCnt = 0;
     }
   }
 
