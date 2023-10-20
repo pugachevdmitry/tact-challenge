@@ -186,7 +186,7 @@ contract Task5 with Deployable {
           body: TransferNFTs{
             queryId: msg.queryId,
             l: left,
-            r: min(self.nftCnt - 1, self.blockSize * (i + 1) - 1),
+            r: min(self.nftCnt - 1, self.blockSize * (i + 1) - 1)
           }.toCell()
         });
         left = left + self.blockSize;
