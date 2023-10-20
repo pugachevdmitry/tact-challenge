@@ -201,12 +201,6 @@ contract Task5 with Deployable {
   }
 
   get fun nfts(): map<Int as uint16, Address> { 
-    self.answer = emptyMap();
-    let i: Int = 0;
-    repeat(self.nftCnt) {
-      self.answer.set(i, self.mp.get(i));
-      i = i + 1;
-    }
-    return self.answer;
+    return self.mp;
   }
 }
