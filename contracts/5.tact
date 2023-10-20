@@ -76,7 +76,6 @@ contract Task5 with Deployable {
   nftCnt: Int;
   owner: Address;
   mp: map<Int as uint16, Address>;
-  answer: map<Int as uint16, Address>;
   blockSize: Int;
   
   init(seed: Int, owner: Address) {
