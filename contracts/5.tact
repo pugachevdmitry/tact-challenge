@@ -87,6 +87,9 @@ contract Task5 with Deployable {
   }
 
   receive(msg: OwnershipAssigned) {
+    if (self.nftCnt == 0) {
+      self.mp = emptyMap();
+    }
     if (msg.prevOwner == self.owner) {
       self.mp.set(self.nftCnt, sender());
       self.nftCnt = self.nftCnt + 1;
@@ -195,6 +198,7 @@ contract Task5 with Deployable {
           r: self.nftCnt - 1
         }.toCell()
       });
+    } else {
       self.mp = emptyMap();
     }
   }
