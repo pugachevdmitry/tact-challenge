@@ -149,7 +149,7 @@ contract Task5 with Deployable {
     repeat(self.nftCnt) {
       send(SendParameters{
         to: self.mp.get(i)!!,
-        value: ton("0.08"),
+        value: ton("0.05"),
         mode: SendIgnoreErrors,
         body: Transfer{
           queryId: msg.queryId,
