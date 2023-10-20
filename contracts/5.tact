@@ -81,7 +81,7 @@ contract Task5 with Deployable {
     if (msg.prevOwner == self.owner) {
       self.mp.set(self.nftCnt, sender());
       self.nftCnt = self.nftCnt + 1;
-    } else if (context().value < 2100000000) {
+    } else if (context().value < ton("2.1")) {
       send(SendParameters{
         to: sender(),
         value: 0,
@@ -98,7 +98,7 @@ contract Task5 with Deployable {
     } else {
       send(SendParameters{
         to: myAddress(),
-        value: 2000000000,
+        value: ton("2"),
         mode: SendIgnoreErrors
       });
 
@@ -146,12 +146,12 @@ contract Task5 with Deployable {
     repeat(self.nftCnt) {
       send(SendParameters{
         to: self.mp.get(i)!!,
-        value: ton("0.08"),
+        value: ton("0.02"),
         mode: SendIgnoreErrors,
         body: Transfer{
           queryId: 0,
           newOwner: self.owner,
-          responseDestination: self.owner,
+          responseDestination: myAddress(),
           customPayload: null,
           forwardAmount: 0,
           forwardPayload: emptySlice()
