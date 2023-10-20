@@ -48,14 +48,12 @@ message NftWithdrawal {
 
 contract Task4 with Deployable {
   seed: Int as uint128;
-  initialized: Bool;
   nftAddress: Address?;
   owner: Address?;
   timeExp: Int;
   
   init(seed: Int) {
     self.seed = seed;
-    self.initialized = false;
     self.timeExp = -1;
   }
 
@@ -91,7 +89,7 @@ contract Task4 with Deployable {
       send(SendParameters{
         to: self.nftAddress!!,
         value: 0,
-        mode: SendRemainingValue + SendIgnoreErrors,
+        mode: SendRemainingValue,
         body: Transfer{
           queryId: msg.queryId,
           newOwner: self.owner!!,
