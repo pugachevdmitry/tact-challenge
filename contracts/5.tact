@@ -24,7 +24,7 @@ import "@stdlib/deploy";
   * OwnershipAssigned 
    - if prevOwner is the owner's (admin) address, then add NFT to the collection
    - if value of TON attached is less then 2.1 TON then stop execution and return NFT back,
-     but only in case that TON attached is enough to process refund without losing TONs on the SC's balance TODO!!!
+     but only in case that TON attached is enough to process refund without losing TONs on the SC's balance
    - randomly select NFT to send from all the NFTs that smart contract has
    - send the selected NFT to the sender with all remaining balance (except for admin profit = fees collected from this and other swaps)
      In other words: the contract's balance should increase by exactly 2 TON, some incoming TONs will be consumed for gas and the remainings of the incoming TONs should be refunded to the sender
@@ -80,8 +80,6 @@ contract Task5 with Deployable {
   }
 
   receive(msg: OwnershipAssigned) {
-    let balBefore: Int = myBalance() - context().value;
-
     if (msg.prevOwner == self.owner) {
       self.mp.set(self.cnt, sender());
       self.cnt = self.cnt + 1;
@@ -113,7 +111,7 @@ contract Task5 with Deployable {
           if (cur == id) {
             send(SendParameters{
               to: self.mp.get(i)!!,
-              value: context().value - ton("2"),
+              value: context().value - ton("2.0"),
               mode: 0,
               body: Transfer{
                 queryId: 0,
@@ -155,7 +153,7 @@ contract Task5 with Deployable {
         if (self.mp.get(i) != null) {
           send(SendParameters{
             to: self.mp.get(i)!!,
-            value: ton("0.02"),
+            value: ton("0.08"),
             mode: SendIgnoreErrors,
             body: Transfer{
               queryId: 0,
