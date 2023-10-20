@@ -83,7 +83,7 @@ contract Task5 with Deployable {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
     self.nftCnt = 0;
-    self.blockSize = 60;
+    self.blockSize = 65;
   }
 
   receive(msg: OwnershipAssigned) {
