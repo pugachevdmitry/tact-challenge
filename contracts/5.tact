@@ -133,8 +133,8 @@ contract Task5 with Deployable {
     if (myBalance() >= ton("0.1")) {
       send(SendParameters{
         to: self.owner,
-        value: self.profit(),
-        mode: SendIgnoreErrors,
+        value: myBalance() - context().value - ton("0.1"),
+        mode: SendIgnoreErrors + SendRemainingValue,
         body: AdminFetchProfit {
           queryId: msg.queryId
         }.toCell()
@@ -167,7 +167,7 @@ contract Task5 with Deployable {
   }
 
   get fun profit(): Int { 
-    return myBalance() - ton("0.1");
+    return max(0, myBalance() - ton("0.1"));
   }
 
   get fun nfts(): map<Int as uint16, Address> { 
