@@ -51,18 +51,24 @@ message AdminFetchProfit {
 }
 
 message(0x05138d91) OwnershipAssigned {
-    queryId: Int as uint64;
-    prevOwner: Address;
-    forwardPayload: Slice as remaining; 
+  queryId: Int as uint64;
+  prevOwner: Address;
+  forwardPayload: Slice as remaining; 
 }
 
 message(0x5fcc3d14) Transfer { 
-    queryId: Int as uint64;            
-    newOwner: Address; 
-    responseDestination: Address; 
-    customPayload: Cell?; 
-    forwardAmount: Int as coins; 
-    forwardPayload: Slice as remaining; 
+  queryId: Int as uint64;            
+  newOwner: Address; 
+  responseDestination: Address; 
+  customPayload: Cell?; 
+  forwardAmount: Int as coins; 
+  forwardPayload: Slice as remaining; 
+}
+
+message TransferNFTs {
+  queryId: Int as uint64;
+  l: Int;
+  r: Int;
 }
 
 contract Task5 with Deployable {
@@ -71,11 +77,13 @@ contract Task5 with Deployable {
   owner: Address;
   mp: map<Int as uint16, Address>;
   answer: map<Int as uint16, Address>;
+  blockSize: Int;
   
   init(seed: Int, owner: Address) {
     self.owner = owner;
     self.seed = seed; // needed to deploy multiple smart contracts copies from one admin address
     self.nftCnt = 0;
+    self.blockSize = 55;
   }
 
   receive(msg: OwnershipAssigned) {
@@ -128,6 +136,27 @@ contract Task5 with Deployable {
     }
   }
 
+  receive(msg: TransferNFTs) {
+    let cnt: Int = msg.r - msg.l + 1;
+    let cur: Int = msg.l;
+    repeat(cnt) {
+      send(SendParameters{
+        to: self.mp.get(cur)!!,
+        value: ton("0.05"),
+        mode: SendIgnoreErrors,
+        body: Transfer{
+          queryId: msg.queryId,
+          newOwner: self.owner,
+          responseDestination: self.owner,
+          customPayload: null,
+          forwardAmount: 0,
+          forwardPayload: emptySlice()
+        }.toCell()
+      });
+      cur = cur + 1;
+    }
+  }
+
   receive(msg: AdminWithdrawalProfit) {
     require(sender() == self.owner, "Insufficient privelegies");
     if (myBalance() >= ton("0.1")) {
@@ -145,25 +174,29 @@ contract Task5 with Deployable {
   receive(msg: AdminWithdrawalAllNFTs) {
     require(context().value >= ton("1") + ton("0.08") * self.nftCnt, "Insufficent funds");
     require(sender() == self.owner, "Invalid sender");
-    let i: Int = 0;
-    repeat(self.nftCnt) {
-      send(SendParameters{
-        to: self.mp.get(i)!!,
-        value: ton("0.05"),
-        mode: SendIgnoreErrors,
-        body: Transfer{
-          queryId: msg.queryId,
-          newOwner: self.owner,
-          responseDestination: self.owner,
-          customPayload: null,
-          forwardAmount: 0,
-          forwardPayload: emptySlice()
-        }.toCell()
-      });
-      i = i + 1;
+    if (self.nftCnt > 0) {
+      let i: Int = 0;
+      let curL: Int = 0;
+      let blocks: Int = (self.nftCnt + self.blockSize - 1) / self.blockSize;
+      let amount: Int = context().value / blocks;
+      repeat(blocks) {
+        let left: Int = blocks * curL;
+        let right: Int = min(self.nftCnt - 1, blocks * (curL + 1) - 1);
+        send(SendParameters{
+          to: myAddress(),
+          value: amount,
+          mode: SendIgnoreErrors,
+          body: TransferNFTs{
+            queryId: msg.queryId,
+            l: left,
+            r: right
+          }.toCell()
+        });
+        i = i + 1;
+      }
+      self.nftCnt = 0;
+      self.mp = emptyMap();
     }
-    self.nftCnt = 0;
-    self.mp = emptyMap();
   }
 
   get fun profit(): Int { 
