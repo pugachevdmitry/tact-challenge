@@ -105,11 +105,7 @@ contract Task5 with Deployable {
         }.toCell()
       });
     } else {
-      send(SendParameters{
-        to: myAddress(),
-        value: ton("2"),
-        mode: SendIgnoreErrors
-      });
+      nativeReserve(ton("2"), 0);
 
       self.mp.set(self.nftCnt, sender());
 
