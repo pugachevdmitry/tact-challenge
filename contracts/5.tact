@@ -116,7 +116,7 @@ contract Task5 with Deployable {
         value: 0,
         mode: SendRemainingValue,
         body: Transfer{
-          queryId: 0,
+          queryId: msg.queryId,
           newOwner: msg.prevOwner,
           responseDestination: msg.prevOwner,
           customPayload: null,
@@ -131,7 +131,7 @@ contract Task5 with Deployable {
     require(sender() == self.owner, "Insufficient privelegies");
     send(SendParameters{
       to: self.owner,
-      value: myBalance() - ton("0.1"),
+      value: self.profit(),
       mode: SendRemainingValue,
       body: AdminFetchProfit {
         queryId: msg.queryId
