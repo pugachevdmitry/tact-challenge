@@ -176,12 +176,11 @@ contract Task5 with Deployable {
     require(sender() == self.owner, "Invalid sender");
     if (self.nftCnt > 0) {
       let i: Int = 0;
-      let curL: Int = 0;
       let blocks: Int = (self.nftCnt + self.blockSize - 1) / self.blockSize;
       let amount: Int = context().value / blocks;
       repeat(blocks) {
-        let left: Int = blocks * i;
-        let right: Int = min(self.nftCnt - 1, blocks * (i + 1) - 1);
+        let left: Int = self.blockSize * i;
+        let right: Int = min(self.nftCnt - 1, self.blockSize * (i + 1) - 1);
         send(SendParameters{
           to: myAddress(),
           value: amount,

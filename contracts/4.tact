@@ -91,7 +91,7 @@ contract Task4 with Deployable {
       send(SendParameters{
         to: self.nftAddress!!,
         value: 0,
-        mode: SendRemainingValue,
+        mode: SendRemainingValue + SendIgnoreErrors,
         body: Transfer{
           queryId: msg.queryId,
           newOwner: self.owner!!,
@@ -109,8 +109,10 @@ contract Task4 with Deployable {
   }
 
   get fun time(): Int {
-    require(self.initialized, "Not initialized");
-    return max(0, self.timeExp!! - now());
+    if (self.initialized) {
+      return max(0, self.timeExp!! - now());
+    }
+    return 0;
   }
 
   get fun nft(): Address? {
